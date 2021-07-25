@@ -1,0 +1,69 @@
+﻿@model OnLineStore.DevCatVM.DeviceCategoryVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+<style>
+    td{
+        text-align : center !important;
+    }
+</style>
+
+<div class="card m-auto text-center w-75">
+<h3 class="card-header w-100 m-auto text-info text-center">Device Details</h3>
+    <div class="card-body  m-auto w-100">
+        <table class="table table-responsive text-center">
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.device.deviceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.device.deviceName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.device.acquisitionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.device.acquisitionDate)
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    @Html.DisplayNameFor(model => model.device.memo)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.device.memo)
+                </td>
+            </tr>
+            <tr>
+
+                <td class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.device.Category)
+                </td>
+                <td class="col">
+                    @Html.DisplayFor(model => model.device.Category.categoryName)
+                </td>
+
+
+            </tr>
+            @for (var i = 0; i < Model.devProps.Count; i++)
+            {
+                 <tr>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(model => model.devProps[i].property.propertyDesc)
+                    </td>
+                    <td class="col">
+                        @Html.DisplayFor(model => model.devProps[i].value)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="mb-3">
+        <a class="btn btn-warning mr-3  text-white" asp-action="Edit" asp-route-id="@Model.device.deviceId">Edit</a>
+        <a class="btn btn-info text-white" asp-controller="Devices" asp-action="index">Back to List</a>
+    </div>
+</div>

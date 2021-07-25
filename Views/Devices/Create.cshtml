@@ -1,0 +1,147 @@
+﻿@model OnLineStore.Entities.Device
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="row boder  card m-auto mt-5">
+    <h4 class="card-header text-center">Device</h4>
+    <div class="col-md-4 card-body m-auto ">
+        <div  class="text-center">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="deviceName" class="control-label"></label>
+                <input id="deviceName" asp-for="deviceName" class="form-control" />
+                <span asp-validation-for="deviceName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="acquisitionDate" class="control-label"></label>
+                <input id="acquisitionDate" asp-for="acquisitionDate" class="form-control" />
+                <span asp-validation-for="acquisitionDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Memory</label>
+                <input id="memo" asp-for="memo" class="form-control" />
+                <span asp-validation-for="memo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label"> Category</label>
+                <select id="catdrpdwn" asp-for="categoryId" class="form-control" asp-items="ViewBag.categoryId"></select>
+            </div>
+            <div id="list">
+                
+            </div>
+            <div class="form-group">
+                <button onclick="addDevice()" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        var length = 0;
+        var deviceId = 0;
+        var propertyId = 0;
+        var arrayPropDev = [];
+
+        $("#catdrpdwn").change(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Devices/GetCatProps/" + $("#catdrpdwn").val(),
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+
+                    length = response.length;
+
+                    $('#list').html('');
+
+                    for (var i = 0; i < response.length; i++) {
+
+                        $("#list").append(`<div
+                        class="form-group">
+                        <label  class="control-label">`+ response[i].property.propertyDesc + `</label>
+                        <input id="item-`+ response[i].property.propertyId + `" class="form-control" />
+                        </div> `);
+
+
+                        arrayPropDev[i] = {
+                            "propertyId": response[i].property.propertyId,
+                            "deviceId": 0,
+                            "value": ""
+                        };
+
+                    }
+
+
+                },
+                error: function (response) {
+                    alert(response.d);
+                }
+            });
+
+
+        });
+        function addDevice() {
+            for (var i = 0; i < length; i++) {
+
+                arrayPropDev[i].value = $("#item-" + arrayPropDev[i].propertyId).val();
+
+            }
+            var deviceName = $("#deviceName").val();
+            var acquisitionDate = $("#acquisitionDate").val();
+            var memo = $("#memo").val();
+            var categoryId = $("#catdrpdwn").val();
+            var obj = { deviceName: deviceName, acquisitionDate: acquisitionDate, memo: memo, categoryId: categoryId }
+            $.ajax({
+                url: "/Devices/CreateDevice",
+                type: 'POST',
+                data: obj,
+                dataType: 'json',
+                success: function (response) {
+
+                    for (var i = 0; i < arrayPropDev.length; i++) {
+                        arrayPropDev[i].deviceId = response.deviceId;
+                    }
+                    addDeviceProp();
+
+},
+error: function (response) {
+
+}
+});
+
+
+}
+        function addDeviceProp()
+        {
+            debugger;
+            $.ajax({
+                url: "/Devices/CreateDeviceProp",
+                type: 'POST',
+                data: { devProps:arrayPropDev },
+                dataType: 'json',
+                success: function (response) {
+                    
+                    alert("Device Added");
+                    document.location.href = '/Devices/Index';
+
+                },
+                error: function (response) {
+
+                }
+            });
+
+
+        }
+
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

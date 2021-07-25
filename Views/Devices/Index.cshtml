@@ -1,0 +1,54 @@
+﻿@model IEnumerable<OnLineStore.Entities.Device>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<p style="margin-top:5%">
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table table-bordered  table-striped w-100" >
+    <thead>
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(model => model.deviceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.acquisitionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.memo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    @Html.DisplayFor(modelItem => item.deviceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.acquisitionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.memo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.categoryName)
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.deviceId">Edit</a>
+                    <a asp-action="Details" class="btn btn-info" asp-route-id="@item.deviceId">Details</a>
+                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.deviceId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
